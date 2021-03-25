@@ -4,6 +4,10 @@ En este canal de youtube me he apoyado para los códigos: [url:https://www.youtu
 
 ---
 
+## Contenido
+* Comentar
+* Swich case
+
 
 ### Simple code: Comment
 ``` MQL5
@@ -25,7 +29,7 @@ void OnTick() {
 ```
 ### Switch
 <details>
-  <summary>some <code>Code</code>, aham</summary>
+  <summary>Mostrar <code>Codigo</code>, click aquí</summary>
    
    ``` MQL5
    //+------------------------------------------------------------------+
