@@ -1,14 +1,20 @@
+//+------------------------------------------------------------------+
+//|                                                      Code 3      |
+//|                                      Copyright 2020, CompanyName |
+//|                                       http://www.companyname.net |
+//+------------------------------------------------------------------+
 int DelayCounter = 1;
 
 int MinNumber = 500000;
 
-void OnTick()
-  {
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void OnTick() {
 //---
-   while(DelayCounter<MinNumber)
-     {
-      Comment("Contador: ",DelayCounter);
-      DelayCounter+=1;
-     }
-  }
+   while(DelayCounter < MinNumber) {
+      Comment("Contador: ", DelayCounter);
+      DelayCounter += 1;
+   }
+}
 //+------------------------------------------------------------------+
