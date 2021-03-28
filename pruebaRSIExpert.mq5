@@ -1,10 +1,10 @@
 //+------------------------------------------------------------------+
-//|                                              pruebaRSIExpert.mq5 |
-//|                        Copyright 2020, MetaQuotes Software Corp. |
-//|                                             https://www.mql5.com |
+//|                                                      ProjectName |
+//|                                      Copyright 2020, CompanyName |
+//|                                       http://www.companyname.net |
 //+------------------------------------------------------------------+
-#property copyright "Copyright 2020, MetaQuotes Software Corp."
-#property link      "https://www.mql5.com"
+#property copyright "Copyright 2021, A4."
+#property link      "None"
 #property version   "1.00"
 //--- input parameters
 input int      Input1;
@@ -12,80 +12,80 @@ input int      Input2;
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
-#include <Trade\Trade.mqh>                                         //include the library for execution of trades
-#include <Trade\PositionInfo.mqh>                                  //include the library for obtaining information on positions
+#include <Trade\Trade.mqh>
+#include <Trade\PositionInfo.mqh>
 
-int               iMA_handle;                              //variable for storing the indicator handle
+int               iMA_handle;
 int               myRSIDefinition ;
-double            iMA_buf[];                               //dynamic array for storing indicator values
-double            Close_buf[];                             //dynamic array for storing the closing price of each bar
+double            iMA_buf[];
+double            Close_buf[];
 double            myRSIArray[];
 
 
 
-string            my_symbol;                               //variable for storing the symbol
-ENUM_TIMEFRAMES   my_timeframe;                             //variable for storing the time frame
+string            my_symbol;
+ENUM_TIMEFRAMES   my_timeframe;
 
-CTrade            m_Trade;                                 //structure for execution of trades
-CPositionInfo     m_Position;                              //structure for obtaining information of positions
+CTrade            m_Trade;
+CPositionInfo     m_Position;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 int OnInit() {
-   my_symbol = Symbol();                                    //save the current chart symbol for further operation of the EA on this very symbol
-   my_timeframe = PERIOD_CURRENT;                            //save the current time frame of the chart for further operation of the EA on this very time frame
-   iMA_handle = iMA(my_symbol, my_timeframe, 40, 0, MODE_SMA, PRICE_CLOSE); //apply the indicator and get its handle
+   my_symbol = Symbol();
+   my_timeframe = PERIOD_CURRENT;
+   iMA_handle = iMA(my_symbol, my_timeframe, 40, 0, MODE_SMA, PRICE_CLOSE);
    myRSIDefinition = iRSI(my_symbol, my_timeframe, 14, PRICE_CLOSE);
-   if(iMA_handle == INVALID_HANDLE) {                        //check the availability of the indicator handle
-      Print("Failed to get the indicator handle");              //if the handle is not obtained, print the relevant error message into the log file
-      return(-1);                                           //complete handling the error
+   if(iMA_handle == INVALID_HANDLE) {
+      Print("Failed to get the indicator handle");
+      return(-1);
    }
-   ChartIndicatorAdd(ChartID(), 0, iMA_handle);                //add the indicator to the price chart
-   ArraySetAsSeries(iMA_buf, true);                           //set iMA_buf array indexing as time series
-   ArraySetAsSeries(Close_buf, true);                         //set Close_buf array indexing as time series
+   ChartIndicatorAdd(ChartID(), 0, iMA_handle);
+   ArraySetAsSeries(iMA_buf, true);
+   ArraySetAsSeries(Close_buf, true);
    ArraySetAsSeries(myRSIArray, true);
-   return(0);                                               //return 0, initialization complete
+   return(0);
 }
 //+------------------------------------------------------------------+
 //| Expert deinitialization function                                 |
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason) {
-   IndicatorRelease(iMA_handle);                             //deletes the indicator handle and deallocates the memory space it occupies
-   ArrayFree(iMA_buf);                                      //free the dynamic array iMA_buf of data
-   ArrayFree(Close_buf);                                    //free the dynamic array Close_buf of data
+   IndicatorRelease(iMA_handle);
+   ArrayFree(iMA_buf);
+   ArrayFree(Close_buf);
 }
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
 //+------------------------------------------------------------------+
 void OnTick() {
-   int err1 = 0;                                           //variable for storing the results of working with the indicator buffer
-   int err2 = 0;                                           //variable for storing the results of working with the price chart
+   int err1 = 0;
+   int err2 = 0;
    int err3 = 0;
-   err1 = CopyBuffer(iMA_handle, 0, 1, 2, iMA_buf);         //copy data from the indicator array into the dynamic array iMA_buf for further work with them
-   err2 = CopyClose(my_symbol, my_timeframe, 1, 2, Close_buf); //copy the price chart data into the dynamic array Close_buf for further work with them
+   err1 = CopyBuffer(iMA_handle, 0, 1, 2, iMA_buf);
+   err2 = CopyClose(my_symbol, my_timeframe, 1, 2, Close_buf);
    err3 = CopyBuffer(myRSIDefinition, 0, 0, 3, myRSIArray);
-   if(err1 < 0 || err2 < 0) {                              //in case of errors
-      Print("Failed to copy data from the indicator buffer or price chart buffer");  //then print the relevant error message into the log file
-      return;                                                               //and exit the function
+   if(err1 < 0 || err2 < 0) {
+      Print("Failed to copy data from the indicator buffer or price chart buffer");
+      return;
    }
-   if(myRSIArray[1] < 30) { //if the indicator values were greater than the closing price and became smaller
-      if(m_Position.Select(my_symbol)) {                   //if the position for this symbol already exists
+   if(myRSIArray[1] < 30) {
+      if(m_Position.Select(my_symbol)) {
          if(m_Position.PositionType() == POSITION_TYPE_SELL)
-            m_Trade.PositionClose(my_symbol);  //and this is a Sell position, then close it
+            m_Trade.PositionClose(my_symbol);
          if(m_Position.PositionType() == POSITION_TYPE_BUY)
-            return;                              //or else, if this is a Buy position, then exit
+            return;
       }
-      m_Trade.Buy(0.01, my_symbol);                         //if we got here, it means there is no position; then we open it
+      m_Trade.Buy(0.01, my_symbol);
    }
-   if(myRSIArray[1] > 70) { //if the indicator values were less than the closing price and became greater
-      if(m_Position.Select(my_symbol)) {                   //if the position for this symbol already exists
+   if(myRSIArray[1] > 70) {
+      if(m_Position.Select(my_symbol)) {
          if(m_Position.PositionType() == POSITION_TYPE_BUY)
-            m_Trade.PositionClose(my_symbol);   //and this is a Buy position, then close it
+            m_Trade.PositionClose(my_symbol);
          if(m_Position.PositionType() == POSITION_TYPE_SELL)
-            return;                             //or else, if this is a Sell position, then exit
+            return;
       }
       if(PositionsTotal() == 0) {
-       //  m_Trade.Sell(0.01, my_symbol);                        //if we got here, it means there is no position; then we open it
+         //  m_Trade.Sell(0.01, my_symbol);
       }
    }
    double myRSIValue = NormalizeDouble(myRSIArray[0], 2);

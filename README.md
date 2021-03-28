@@ -5,7 +5,7 @@ En este canal de youtube me he apoyado para los códigos: [Youtube videos: MQL5 
 ---
 
 ## Contenido
-* Comentar
+* ComentarIF
 * Swich case
 
 * Simple code: Comment (See code1.mq5)

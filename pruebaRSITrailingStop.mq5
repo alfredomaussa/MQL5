@@ -33,7 +33,7 @@ ENUM_TIMEFRAMES   my_timeframe;                             //variable for stori
 CTrade            trade;                                 //structure for execution of trades
 CPositionInfo     m_Position;                              //structure for obtaining information of positions
 //+------------------------------------------------------------------+
-//|                                                                  |
+//|          Initial configuraion                                                        |
 //+------------------------------------------------------------------+
 int OnInit() {
    my_symbol = Symbol();                                    //save the current chart symbol for further operation of the EA on this very symbol
